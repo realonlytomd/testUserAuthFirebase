@@ -1,0 +1,100 @@
+<html>
+
+<head>
+    <title>Firbase Authentication Example</title>
+</head>
+
+<body>
+    <form>
+        <div>
+            <input id="email" type="text" placeholder="Email...">
+        </div>
+        <div>
+            <input id="password" type="password" placeholder="Password...">
+        </div>
+        <div>
+            <button id="sign-in">Sign In/Register</button>
+            <button id="sign-out">Sign Out</button>
+        </div>
+    </form>
+
+    <!--Include firebase.js  -->
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+  
+    <!--Configure firebase-->
+    <script>
+    // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCRsyKZuuu_QDd57XGOWTbLDHeFjvb9waY",
+            authDomain: "letslift-29b93.firebaseapp.com",
+            databaseURL: "https://letslift-29b93.firebaseio.com",
+            projectId: "letslift-29b93",
+            storageBucket: "letslift-29b93.appspot.com",
+            messagingSenderId: "469348898605"
+        };
+        firebase.initializeApp(config);
+    </script>
+
+    <!--Handle auth events-->
+    <script>
+        firebase.auth().onAuthStateChanged(function(user) {
+        window.user = user;
+        
+        });
+    </script>
+  
+    <!--Handle page events-->
+    <script>    
+        document.querySelector("#sign-in").addEventListener("click", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var email = document.querySelector("#email").value;
+            console.log("email: " + email);
+            var password = document.querySelector("#password").value
+            var auth = firebase.auth();
+            var credential = firebase.auth.EmailAuthProvider.credential(email, password);
+            var currentUser = auth.currentUser;
+      
+        // Step 2
+        //  Get a credential with firebase.auth.emailAuthProvider.credential(emailInput.value, passwordInput.value)
+        //  If there is no current user, log in with auth.signInWithCredential(credential)
+        //  If there is a current user an it's anonymous, atttempt to link the new user with firebase.auth().currentUser.link(credential) 
+        //  The user link will fail if the user has already been created, so catch the error and sign in.
+            if ((email === "") && (password === "")) {
+            // sign in anonymously
+                firebase.auth().signInAnonymously()
+                .catch(function(error) {
+                });
+            } else {
+                // Register a new user
+                
+                console.log("email and password are not undefined!");
+                firebase.auth().createUserWithEmailAndPassword(email, password)
+                    .catch(function (err) {
+                });
+            }
+     
+        
+
+      
+        
+
+        // // Sign in existing user
+        // firebase.auth().signInWithEmailAndPassword(email, password)
+        //     .catch(function(err) {
+        // });
+
+        
+
+    });
+    
+    document.querySelector("#sign-out").addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      firebase.auth().signOut();
+    });
+  </script>
+
+</body>
+
+</html>
